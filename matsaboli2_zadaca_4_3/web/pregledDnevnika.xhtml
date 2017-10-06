@@ -1,0 +1,111 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <body>
+        <ui:composition template="./predlozak.xhtml">
+
+            <ui:define name="naslov">
+                Pregled dnevnika
+            </ui:define>
+
+            <ui:define name="top">
+                <div class="jumbotron">
+                    <h1>NWTiS - Zadaća 4</h1>
+                </div>
+            </ui:define>
+
+            <ui:define name="left">
+                <ul class="list-group">
+                    <h:form>
+                        <h:commandLink class="list-group-item" value="Početak" action="#{navigacija.goToIndex()}"  />
+                        <h:commandLink class="list-group-item" value="IoT" action="#{navigacija.goToPregledIoT()}" />
+                        <h:commandLink class="list-group-item active"  disabled="true" value="Dnevnik" />
+                        <h:commandLink class="list-group-item" value="Promjene" action="#{navigacija.goToPregledPromjena()}" />
+                    </h:form>
+                </ul>
+            </ui:define>
+
+            <ui:define name="content">
+                <h3>NWTiS - Pregled dnevnika</h3><br />
+                <h:form>
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Dnevnik rada</h3>
+                        </div>
+                        <div class="panel-body">
+                            <div class="form-group">
+                                <h:outputLabel for="ip_adresa" value="IP adresa: " />
+                                <h:inputText value="#{pregledDnevnika.ip_adresa}" class="form-control" id="ip_adresa" />
+                            </div>
+                            <div class="form-group">
+                                <h:outputLabel for="trajanje" value="Trajanje: " />
+                                <h:inputText value="#{pregledDnevnika.trajanje}" class="form-control" id="trajanje" />
+                            </div>
+                            <div class="form-group">
+                                <h:outputLabel for="status" value="Status: " />
+                                <h:inputText value="#{pregledDnevnika.status}" class="form-control" id="status" />
+                            </div>                            
+                            <div class="form-group">
+                                <h:outputLabel value="Vrijeme od: " for="vrijeme_od" />
+                                <p:calendar id="vrijeme_od" value="#{pregledDnevnika.vrijeme_od}" pattern="yyyy-MM-dd HH:mm:ss" />
+                            </div>
+                            <div class="form-group">
+                                <h:outputLabel value="Vrijeme do: " for="vrijeme_do" />
+                                <p:calendar id="vrijeme_do" value="#{pregledDnevnika.vrijeme_do}" pattern="yyyy-MM-dd HH:mm:ss" />
+                            </div>
+                            <div class="btn-toolbar">
+                                <h:commandButton value="Pretraži" action="#{pregledDnevnika.filtrirajDnevnik()}" class="btn btn-default">
+                                    <f:ajax execute="@form" render="@form" />
+                                </h:commandButton>    
+                            </div>
+                            <hr />
+                            <div class="row">
+                                <h:dataTable value="#{pregledDnevnika.lista}" var="dnevnik" class="table table-hover">
+                                    <h:column>
+                                        <f:facet name="header">ID</f:facet>
+                                        <h:outputText value="#{dnevnik.id}" />
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">Korisnik</f:facet>
+                                        <h:outputText value="#{dnevnik.korisnik}" />
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">URL</f:facet>
+                                        <h:outputText value="#{dnevnik.url}" />
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">IP adresa</f:facet>
+                                        <h:outputText value="#{dnevnik.ipadresa}" />
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">Vrijeme</f:facet>
+                                        <h:outputText value="#{dnevnik.vrijeme}">
+                                            <f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss" timeZone="#{pregledDnevnika.timeZone}" />
+                                        </h:outputText>
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">Trajanje</f:facet>
+                                        <h:outputText value="#{dnevnik.trajanje}" />
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">Status</f:facet>
+                                        <h:outputText value="#{dnevnik.status}" />
+                                    </h:column>
+                                </h:dataTable>
+                            </div>
+                        </div>
+                    </div>
+                </h:form>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>
+
+

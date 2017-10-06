@@ -1,0 +1,219 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="./predlozak.xhtml">
+
+            <ui:define name="naslov">
+                Pregled IoT uređaja i prognoza vremena
+            </ui:define>
+
+            <ui:define name="top">
+                <div class="jumbotron">
+                    <h1>NWTiS - Zadaća 4</h1>
+                </div>               
+            </ui:define>
+
+            <ui:define name="left">
+                <ul class="list-group">
+                    <h:form>
+                        <h:commandLink class="list-group-item" value="Početak" action="#{navigacija.goToIndex()}" />
+                        <h:commandLink class="list-group-item active"  disabled="true" value="IoT" />
+                        <h:commandLink class="list-group-item" value="Dnevnik" action="#{navigacija.goToPregledDnevnika()}" />
+                        <h:commandLink class="list-group-item" value="Promjene" action="#{navigacija.goToPregledPromjena()}" />
+                    </h:form>
+                </ul>
+            </ui:define>
+
+            <ui:define name="content">
+                <h3>NWTiS - Pregled IoT uređaja i prognoza vremena</h3>
+                <h:outputText value="#{odabirIoTPrognoza.showIot}" /><br />
+                <h:form>
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Dodavanje uređaja</h3>
+                        </div>
+                        <div class="panel-body">
+                            <h:panelGroup layout="block" rendered="#{odabirIoTPrognoza.error_unos}">
+                                <div class="alert alert-danger">
+                                    <strong>Error!</strong> Uređaj sa tim ID-om već postoji u aplikaciji.
+                                </div>
+                            </h:panelGroup>    
+                            <div class="row">
+                                <div class="col-md-1">
+                                    <h:outputLabel value="ID: " for="new_id" />
+                                </div>
+                                <div class="col-md-6">
+                                    <h:inputText id="new_id" value="#{odabirIoTPrognoza.id_unos}" class="form-control"/>
+                                </div>
+                            </div>
+                            <h:panelGroup layout="block" rendered="#{odabirIoTPrognoza.error_unos}">
+                                <br />
+                            </h:panelGroup>  
+                            <div class="row">
+                                <div class="col-md-1">
+                                    <h:outputLabel value="Naziv: " for="new_naziv" />
+                                </div>
+                                <div class="col-md-6">
+                                    <h:inputText id="new_naziv" value="#{odabirIoTPrognoza.naziv_unos}" class="form-control" />
+                                </div>
+                            </div>
+                            <br/>
+                            <div class="row">
+                                <div class="col-md-1">
+                                    <h:outputLabel value="Adresa: " for="new_adresa" />
+                                </div>
+                                <div class="col-md-6">
+                                    <h:inputText id="new_adresa" value="#{odabirIoTPrognoza.adresa_unos}" class="form-control" />
+                                </div> 
+                                <div class="col-md-2">
+                                    <h:commandButton value="Dodaj IoT uređaj" action="#{odabirIoTPrognoza.dodajIoT()}" class="btn btn-default">
+                                        <f:ajax execute="new_id new_naziv new_adresa" render="@form" />
+                                    </h:commandButton>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Uređaji</h3>
+                        </div>
+                        <div class="panel-body">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <h:outputLabel value="Raspoloživi IoT uređaji" for="raspolozivi_iot" />
+                                    <h:selectManyListbox id="raspolozivi_iot" value="#{odabirIoTPrognoza.popisRaspolozivihUredaja}" size="7" class="form-control">
+                                        <f:selectItems value="#{odabirIoTPrognoza.raspolozivi_uredaji}" var="i" itemLabel="#{i.labela}" itemValue="#{i.vrijednost}" />
+                                    </h:selectManyListbox>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <br /><br />
+                                <div class="btn-group-vertical" role="group">
+                                    <h:commandButton value="Preuzmi" action="#{odabirIoTPrognoza.preuzmiIoT()}" class="btn btn-default" >
+                                        <f:ajax execute="raspolozivi_iot" render="raspolozivi_iot odabrani_iot"  />
+                                    </h:commandButton>
+                                    <h:commandButton value="Vrati" action="#{odabirIoTPrognoza.vratiIoT()}" class="btn btn-default">
+                                        <f:ajax execute="odabrani_iot" render="raspolozivi_iot odabrani_iot" />
+                                    </h:commandButton>
+                                    <h:commandButton value="Ažuriraj" action="#{odabirIoTPrognoza.editIoT()}" class="btn btn-default">
+                                        <f:ajax execute="@form" render="@form" />
+                                    </h:commandButton>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <h:outputLabel value="Odabrani IoT uređaji" for="odabrani_iot" />
+                                    <h:selectManyListbox id="odabrani_iot" value="#{odabirIoTPrognoza.popisOdabranihUredaja}" size="7" class="form-control">
+                                        <f:selectItems value="#{odabirIoTPrognoza.odabrani_uredjaji}" var="i" itemLabel="#{i.labela}" itemValue="#{i.vrijednost}" />
+                                    </h:selectManyListbox>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <br /><br />
+                                <div class="btn-group-vertical" role="group">
+                                    <h:commandButton value="#{odabirIoTPrognoza.gumbPregledPrognoza}" action="#{odabirIoTPrognoza.weatherView}" class="btn btn-default" >
+                                        <f:ajax execute="@form" render="@form" />
+                                    </h:commandButton>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h:panelGroup layout="block" rendered="#{odabirIoTPrognoza.edit}">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">Ažuriranje uređaja</h3>
+                            </div>
+                            <div class="panel-body">
+                                <h:panelGroup layout="block" rendered="#{odabirIoTPrognoza.error_edit}">
+                                    <div class="alert alert-danger">
+                                        <strong>Error!</strong> Uređaj sa tim ID-om već postoji u aplikaciji.
+                                    </div>
+                                </h:panelGroup> 
+                                <div class="row" >
+                                    <div class="col-md-1">
+                                        <h:outputLabel value="ID: " for="edit_id" />
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h:inputText id="edit_id" value="#{odabirIoTPrognoza.id_edit}" class="form-control"/>
+                                    </div>
+                                </div><br />
+                                <div class="row">
+                                    <div class="col-md-1">
+                                        <h:outputLabel value="Naziv: " for="edit_naziv" />
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h:inputText id="edit_naziv" value="#{odabirIoTPrognoza.naziv_edit}" class="form-control" />
+                                    </div>
+                                </div><br />
+                                <div class="row">
+                                    <div class="col-md-1">
+                                        <h:outputLabel value="Adresa: " for="edit_adresa" />
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h:inputText id="edit_adresa" value="#{odabirIoTPrognoza.adresa_edit}" class="form-control" />
+                                    </div>
+                                    <div class="col-md-2">
+                                        <h:commandButton value="Ažururaj" action="#{odabirIoTPrognoza.azurirajIoT()}" class="btn btn-default">
+                                            <f:ajax execute="@form" render="@form" />
+                                        </h:commandButton>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </h:panelGroup>
+
+                    <h:panelGroup layout="block" rendered="#{odabirIoTPrognoza.view}" >
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">Vremenske prognoze</h3>
+                            </div>
+                            <div class="panel-body">
+                                <h:dataTable  value="#{odabirIoTPrognoza.meteo_prognoze}" var="prognoza" class="table table-hover">
+                                    <h:column>
+                                        <f:facet name="header">ID uređaj</f:facet>
+                                        <h:outputText value="#{prognoza.id}" />
+                                    </h:column>                        
+                                    <h:column>
+                                        <f:facet name="header">Dan</f:facet>
+                                        <h:outputText value="#{prognoza.dan}" />
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">Temperatura</f:facet>
+                                        <h:outputText value="#{prognoza.prognoza.temperatureValue}" />
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">Tlak</f:facet>
+                                        <h:outputText value="#{prognoza.prognoza.pressureValue}" />
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">Vlaga</f:facet>
+                                        <h:outputText value="#{prognoza.prognoza.humidityValue}" />
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">Vrijeme</f:facet>
+                                        <h:outputText value="#{prognoza.prognoza.weatherValue}" />
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">Datum i vrijeme</f:facet>
+                                        <h:outputText value="#{prognoza.prognoza.lastUpdate}" >
+                                            <f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss" timeZone="#{odabirIoTPrognoza.timeZone}" />
+                                        </h:outputText>
+                                    </h:column>
+                                </h:dataTable>
+                            </div>
+                        </div>
+                    </h:panelGroup>
+                </h:form>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

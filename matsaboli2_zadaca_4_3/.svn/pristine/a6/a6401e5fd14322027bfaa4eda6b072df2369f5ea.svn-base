@@ -1,0 +1,204 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package org.foi.nwtis.matsaboli2.web.zrna;
+
+import javax.inject.Named;
+import javax.enterprise.context.SessionScoped;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import javax.ejb.EJB;
+import org.foi.nwtis.matsaboli2.ejb.eb.Uredaji;
+import org.foi.nwtis.matsaboli2.ejb.sb.MeteoIoTKlijent;
+import org.foi.nwtis.matsaboli2.ejb.sb.UredajiFacade;
+import org.foi.nwtis.matsaboli2.web.kontrole.Izbornik;
+import org.foi.nwtis.matsaboli2.web.podaci.Lokacija;
+import org.foi.nwtis.matsaboli2.web.podaci.MeteoPrognoza;
+/**
+ *
+ * @author grupa_1
+ */
+@Named(value = "odabirIoTPrognoza")
+@SessionScoped
+public class OdabirIoTPrognoza implements Serializable {
+
+    @EJB
+    private MeteoIoTKlijent meteoIoTKlijent;
+
+    @EJB
+    private UredajiFacade uredajiFacade;
+    
+    private String id_unos;
+    private String naziv_unos;
+    private String adresa_unos;
+    
+    private String id_edit;
+    private String naziv_edit;
+    private String adresa_edit;
+    
+    private List<Izbornik> raspolozivi_uredaji = new ArrayList<>();
+    private List<Izbornik> odabrani_uredjaji;
+    
+    private List<String> popisRaspolozivihUredaja;
+    private List<String> popisOdabranihUredaja;
+    
+    private boolean edit = false;
+    private boolean view = false;
+    
+    private String gunbPregledPrognoza = "Prognoze";
+    
+    private List<MeteoPrognoza> meteo_prognoze;
+    
+    /**
+     * Creates a new instance of OdabirIoTPrognoza
+     */
+    public OdabirIoTPrognoza() {
+    }
+    
+    private void preuzmiRaspolziveIoTuredaje(){
+        List<Uredaji> uredaji = uredajiFacade.findAll();
+        
+        this.raspolozivi_uredaji.clear();
+        for(Uredaji u: uredaji) {
+            this.raspolozivi_uredaji.add(new Izbornik(u.getNaziv(), u.getId().toString()));
+        }
+    }
+    
+    public String dodajIoT(){
+        Lokacija lokacija = meteoIoTKlijent.dajLokaciju(this.adresa_unos);
+        Uredaji uredjaj = new Uredaji(Integer.parseInt(this.id_unos), this.naziv_unos, Float.parseFloat(lokacija.getLatitude()), Float.parseFloat(lokacija.getLongitude()), 0, new Date(), new Date());        
+        uredajiFacade.create(uredjaj);
+        preuzmiRaspolziveIoTuredaje();
+        
+        return "dodan_IoT";
+    }
+    
+    public String preuzmiIoT(){
+        return "";
+    }
+    
+    public String vratiIoT(){
+        return "";
+    }
+    
+    public String editIoT(){
+        return "";
+    }
+    
+    public String getId_unos() {
+        return id_unos;
+    }
+
+    public void setId_unos(String id_unos) {
+        this.id_unos = id_unos;
+    }
+
+    public String getNaziv_unos() {
+        return naziv_unos;
+    }
+
+    public void setNaziv_unos(String naziv_unos) {
+        this.naziv_unos = naziv_unos;
+    }
+
+    public String getAdresa_unos() {
+        return adresa_unos;
+    }
+
+    public void setAdresa_unos(String adresa_unos) {
+        this.adresa_unos = adresa_unos;
+    }
+
+    public String getId_edit() {
+        return id_edit;
+    }
+
+    public void setId_edit(String id_edit) {
+        this.id_edit = id_edit;
+    }
+
+    public String getNaziv_edit() {
+        return naziv_edit;
+    }
+
+    public void setNaziv_edit(String naziv_edit) {
+        this.naziv_edit = naziv_edit;
+    }
+
+    public String getAdresa_edit() {
+        return adresa_edit;
+    }
+
+    public void setAdresa_edit(String adresa_edit) {
+        this.adresa_edit = adresa_edit;
+    }
+
+    public List<Izbornik> getRaspolozivi_uredaji() {
+        return raspolozivi_uredaji;
+    }
+
+    public void setRaspolozivi_uredaji(List<Izbornik> raspolozivi_uredaji) {
+        this.raspolozivi_uredaji = raspolozivi_uredaji;
+    }
+
+    public List<Izbornik> getOdabrani_uredjaji() {
+        return odabrani_uredjaji;
+    }
+
+    public void setOdabrani_uredjaji(List<Izbornik> odabrani_uredjaji) {
+        this.odabrani_uredjaji = odabrani_uredjaji;
+    }
+
+    public List<String> getPopisRaspolozivihUredaja() {
+        return popisRaspolozivihUredaja;
+    }
+
+    public void setPopisRaspolozivihUredaja(List<String> popisRaspolozivihUredaja) {
+        this.popisRaspolozivihUredaja = popisRaspolozivihUredaja;
+    }
+
+    public List<String> getPopisOdabranihUredaja() {
+        return popisOdabranihUredaja;
+    }
+
+    public void setPopisOdabranihUredaja(List<String> popisOdabranihUredaja) {
+        this.popisOdabranihUredaja = popisOdabranihUredaja;
+    }
+
+    public boolean isEdit() {
+        return edit;
+    }
+
+    public void setEdit(boolean edit) {
+        this.edit = edit;
+    }
+
+    public boolean isView() {
+        return view;
+    }
+
+    public void setView(boolean view) {
+        this.view = view;
+    }
+
+    public String getGunbPregledPrognoza() {
+        return gunbPregledPrognoza;
+    }
+
+    public void setGunbPregledPrognoza(String gunbPregledPrognoza) {
+        this.gunbPregledPrognoza = gunbPregledPrognoza;
+    }
+
+    public List<MeteoPrognoza> getMeteo_prognoze() {
+        return meteo_prognoze;
+    }
+
+    public void setMeteo_prognoze(List<MeteoPrognoza> meteo_prognoze) {
+        this.meteo_prognoze = meteo_prognoze;
+    }
+    
+}

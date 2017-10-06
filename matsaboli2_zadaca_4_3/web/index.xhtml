@@ -1,0 +1,42 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+    <body>
+
+        <ui:composition template="./predlozak.xhtml">
+
+            <ui:define name="naslov">
+                NWTiS - Zadaća 4
+            </ui:define>
+
+            <ui:define name="top">
+                <div class="jumbotron">
+                    <h1>NWTiS - Zadaća 4</h1>
+                </div> 
+            </ui:define>
+
+            <ui:define name="left">
+                <ul class="list-group">
+                    <h:form>
+                        <h:commandLink class="list-group-item active" disabled="true" value="Početak"  />
+                        <h:commandLink class="list-group-item" value="IoT" action="#{navigacija.goToPregledIoT()}" />
+                        <h:commandLink class="list-group-item" value="Dnevnik" action="#{navigacija.goToPregledDnevnika()}" />
+                        <h:commandLink class="list-group-item" value="Promjene" action="#{navigacija.goToPregledPromjena()}" />
+                    </h:form>
+                </ul>
+            </ui:define>
+
+            <ui:define name="content">
+                <h1>NWTiS Zadaća 4</h1>
+                <h3>Opis: enterprise aplikacija za rad s bazom podataka putem ORM uz korištenje JPA uz korisničku stranu s JSF na bazi predloška i korištenje Ajax-a</h3>
+                <h4>Autor: Matija Sabolić</h4>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>
+
